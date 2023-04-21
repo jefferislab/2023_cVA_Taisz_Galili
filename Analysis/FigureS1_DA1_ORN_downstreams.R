@@ -110,7 +110,7 @@ for (i in 1:length(DA1_PN_conn_l)) {
 DA1_input_ratio_thr = DA1_input_ratio[DA1_input_ratio$DA1_ORN_ratio > 0.05, ]
 
 
-# we found all the cell types that get at least 5% of their ORn input from DA1 ORNs (and this 5% is more than 10 synapses)
+# we found all the cell types that get at least 5% of their ORN input from DA1 ORNs (and this 5% is more than 10 synapses)
 # we will plot the absolute and relative input connectivity of these 13 cell types, and their morphology
 DA1_input_ratio_thr$PN_type
 
