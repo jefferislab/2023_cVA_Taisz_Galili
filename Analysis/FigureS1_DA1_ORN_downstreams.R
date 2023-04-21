@@ -60,26 +60,28 @@ neuprint_conn_by_type = function (bodyids, prepost, ...) {
 ORN_df = read.csv("Data/DA1_ORN_side.csv")
 ORN_R = ORN_df$bodyid[ORN_df$side == "R"]
 ORN_L = ORN_df$bodyid[ORN_df$side == "L"]
-ORN = ORN_df$bodyid
 
+ORN = ORN_df$bodyid
 ORN_ds = neuprint_conn_by_type(ORN, prepost = "POST")
 
-# DA1 ORNs without L-R class were manually added to connectivity spreadsheet
-# they are counted in general ORN connectivity graphs
-# not counted in ipsi-contra ORN connectivity situations
+# there are a few ORNs where left-right information isn't clear
+# these will be included when counting connectivity from all ORNs
+# but not included when comparing ipsilateral vs. contralateral ORN input
+
 ORN_NOside_ds = neuprint_conn_by_type(ORN[!(ORN %in% c(ORN_R, ORN_L))], prepost = "POST")
 ORN_NOside_ds_PN = ORN_NOside_ds[(!grepl("LN", ORN_NOside_ds$type)) & (!grepl("ORN", ORN_NOside_ds$type)),]
 ORN_NOside_us = neuprint_conn_by_type(ORN[!(ORN %in% c(ORN_R, ORN_L))], prepost = "PRE")
 ORN_NOside_us_PN = ORN_NOside_us[(!grepl("LN", ORN_NOside_us$type)) & (!grepl("ORN", ORN_NOside_us$type)),]
-# take DA1 ORN downstream PNs (weight > 10)
-# ORN_ds_nonLN = ORN_ds[(!grepl("LN", ORN_ds$type)) & (!grepl("ORN", ORN_ds$type)) & ORN_ds$weight > 10,]
+
+# initially, anything that doesn't have LN (local neuron) in its hemibrain cell type
+# will be referred to as PN (projection neuron)
+
+# take DA1 ORN downstream PN cell types that get more than 10 synapses from all DA1 ORNs
 ORN_ds_PN = ORN_ds[(!grepl("LN", ORN_ds$type)) & (!grepl("ORN", ORN_ds$type)) & ORN_ds$weight > 10,]
 
-# take all PNs that are downs
+# find the inputs of these PN cell types
 DA1_PN_conn_l = lapply(as.list(ORN_ds_PN$type), neuprint_connection_table, prepost = "PRE")
-# can remove first 2 known PNs (uniglomerular lPN and vPN)
-# DA1_PN_conn_l = DA1_PN_conn_l[3:length(DA1_PN_conn_l)]
-
+# calculate the proportion of DA1 ORN inputs for each of these cell types
 DA1_input_ratio = as.data.frame(matrix(NA, nrow = length(DA1_PN_conn_l), ncol =7))
 colnames(DA1_input_ratio) = c("PN_type", "ORN_weight", "DA1_ORN_ratio", "other_ORN_w", "DA1_PN_ratio", "other_PN_w", "nonORN_inputs")
 DA1_input_ratio[, 1] = ORN_ds_PN$type
