@@ -5,7 +5,7 @@ To analyse connectomic data we relied on the `natverse` toolbox from our group: 
 https://natverse.org/
 
 Datasets:
-1. FAFB – [Zheng et al. (2018)](https://doi.org/10.1016/j.cell.2018.06.019), [Dorkenwald et al. (2022)](https://doi.org/10.1038/s41592-021-01330-0)
+1. FAFB – [Zheng et al. (2018)](https://doi.org/10.1016/j.cell.2018.06.019), [Li et al. (2020)](https://doi.org/10.1101/605634), [Dorkenwald et al. (2022)](https://doi.org/10.1038/s41592-021-01330-0)
 Manual tracings of FAFB neurons were deposited at https://catmaid-fafb.virtualflybrain.org/
 
 We used the `rcatmaid` package to query data from CATMAID, and the `fafbseg` package to query data from FlyWire.
