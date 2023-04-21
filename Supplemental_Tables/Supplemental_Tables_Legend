@@ -1,0 +1,17 @@
+Supplemental Files
+
+Supplemental Table 1 - Statistical tests, related to Figures 1-7.
+Statistical tests and significance measures. Where more than two conditions were compared the pairwise comparisons are indicated in the third column; in these cases, Benjamini-Hochberg adjustment was used to correct for multiple comparisons. The number of flies for behavioral experiments represent the group size per group, unless the size differs between groups, in these cases the group size for each genotype is shown separately.
+
+Supplemental Table 2 - Full genotypes of flies, related to Figures 1-7.
+Sheet 2: Full genotypes of flies used in experiments. See Key Resources Table for the genotypes of fly stocks.
+
+Supplemental Table 3 - Connectomic identifiers of neurons, related to Figures 1, 4, 6, 7, S1, S6, S7.
+Connectomics identifiers: FAFB, FlyWire, and hemibrain datasets. In FAFB these are called skeleton IDs and they can be used to look up neuron morphology and connectivity, hosted by Virtual Fly Brain at https://catmaid-fafb.virtualflybrain.org/.
+
+Supplemental Table 4 - Number of synaptic connections between cell types in the FAFB and hemibrain datasets, related to Figures 1, 4, 6, 7, S1, S6, S7.
+Connectivity in FAFB and hemibrain datasets. Values indicate the number of synaptic connections between two cell-types in a specific direction; column from indicates the presynaptic, and column to indicates the postsynaptic cell type. FAFB connectivity is based on partial reconstructions except for the cases where both pre- and postsynaptic arbors were traced to completion. For bilateral neurons the sum of left and right number of synapses in FAFB may not add up to the total connectivity because they reflect connectivity between neurons from the same side, whereas bilateral neurons may connect to neurons from both sides. Hemibrain connectivity reflects version 1.2.1 of the dataset, as displayed at 
+https://neuprint.janelia.org/.
+
+Supplemental Table 5 - Third-layer cell type characteristics, related to Figure 6.
+Third-layer cell types related to Figure S6. Column names indicate the following: from: presynaptic PN type; to: postsynaptic third-order cell type; weight: number of synaptic connections from PN type to third-order cell type; percent_input: the percentage that PN inputs make up of all inputs to the given third-order cell type; n_cells: number of cells in the third-order cell type; projection class: categories based on where the third-order cell type projects (LN: local neuron, ON: output neuron, DN: descending neuron); DA1_input_ratio: the fraction of olfactory inputs that are made by the DA1 PN type; DA1_selective: categories based on the DA1 input ratio, if over 0.5, the cell type is DA1 selective, else it is mixed olfactory; multimodal: describes whether the amount of non-olfactory sensory input to this cell type is more than 25% of all olfactory inputs; bilateral: logical; NT: main neurotransmitter, see also methods. Common_downstream: logical, if the third-order cell type is downstream to both lPNs and lvPNs; final_class: our class of the cell type that uses information from columns projection_class, DA1_selective, multimodal.
