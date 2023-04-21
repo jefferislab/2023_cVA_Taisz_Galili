@@ -226,17 +226,10 @@ windowRect.hb<-c(116L, 1125L, 1121L, 2131L)
 file_out = "Figure_panels/Figure S1I/"
 
 
-# cols = brewer.pal(length(ds_nl_plot), "Spectral")
-cols = rep("#422616", length(ds_nl_plot))
-
-linewidth = 5
-# plot_order = c(2, 1, 4, 3, 5, 6, 7, 8, 9, 10, 11)
-plot_order = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
-
 for (i in 1:length(ds_nl_plot)) {
   nopen3d(zoom = zoom.hb, userMatrix = userMatrix.hb, windowRect=windowRect.hb)
   plot3d(hemibrainr::hemibrain.surf, alpha = .05)
-  plot3d(ds_nl_plot[[i]], col = cols[i], lwd = linewidth)
+  plot3d(ds_nl_plot[[i]], col = "#422616", lwd = 5)
   snapshot3d(paste(file_out, ds_list_sub[i], ".png", sep = ""))
 }
 # close all rgl windows
