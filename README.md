@@ -13,5 +13,5 @@ Supplemental Table 5 shows specific analyses about third-order cell types of the
 
 All other data and analysis are available upon request. Lead contact: Greg Jefferis, https://github.com/jefferis
 
-See the skeleton-to-MIP repository for generating image stacks from EM neurons for MIP search.
+For generating image stacks from EM neurons for MIP search see the skeleton-to-MIP repository.
 https://github.com/jefferislab/skeleton-to-MIP
