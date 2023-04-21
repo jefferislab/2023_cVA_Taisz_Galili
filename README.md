@@ -1,4 +1,4 @@
-# 2023_cVA_Taisz_Galili ![DOI](https://zenodo.org/badge/630810738.svg)](https://zenodo.org/badge/latestdoi/630810738)
+# 2023_cVA_Taisz_Galili ![DOI](https://zenodo.org/badge/630810738.svg)]
 Public data and code for connectomic analyses in Taisz, Galili et al. (2023)
 
 To analyse connectomic data we relied on the `natverse` toolbox from our group: [Bates et al. (2020)](https://doi.org/10.7554/eLife.53350).
