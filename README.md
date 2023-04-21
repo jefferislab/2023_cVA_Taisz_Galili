@@ -1,12 +1,16 @@
 # 2023_cVA_Taisz_Galili
 Public data and code for connectomic analyses in Taisz, Galili et al. (2023)
 
-To analyse connectomic data we relied on the natverse toolbox from our group Bates et al. (2020).
+To analyse connectomic data we relied on the `natverse` toolbox from our group: Bates et al. (2020).
 https://natverse.org/
 
 Datasets:
 1. FAFB – Zheng et al. (2018), Dorkenwald et al. (2022)
 Manual tracings of FAFB neurons were deposited at https://catmaid-fafb.virtualflybrain.org/
+We used the `rcatmaid` package to query data fro CATMAID, and the `fafbseg` package to query data from FlyWire.
+https://github.com/natverse/rcatmaid
+https://github.com/natverse/fafbseg
+https://flywire.ai/
 
 2. hemibrain – Scheffer et al. (2021)
 The data is publically available at https://neuprint.janelia.org (hemibrain:v1.2.1).
