@@ -1,5 +1,5 @@
 # 2023_cVA_Taisz_Galili
-Public code for Taisz, Galili et al. (2023)
+Public data and code for connectomic analyses in Taisz, Galili et al. (2023)
 
 We used two fly brain EM volumes for connectomic analyses.
 1. FAFB – Zheng et al. (2018), Dorkenwald et al. (2022)
