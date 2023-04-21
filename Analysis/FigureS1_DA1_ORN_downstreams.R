@@ -4,6 +4,9 @@
 # ORN cell type and hemisphere annotation from Schlegel, Bates et al., (2021)
 # see https://github.com/natverse/hemibrainr on how to access hemibrain data
 # ----------------------------------------------------------------------------------------------
+# install.packages("natmanager")
+# natmanager::install('natverse')
+
 library(natverse)
 library(ggplot2)
 library(dplyr)
