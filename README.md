@@ -1,7 +1,7 @@
 # 2023_cVA_Taisz_Galili
 Public data and code for connectomic analyses in Taisz, Galili et al. (2023)
 
-We used two fly brain connectomic datasets for analyses:
+We used two fly brain EM volumes for connectomic for analyses:
 1. FAFB – Zheng et al. (2018), Dorkenwald et al. (2022)
 Manual tracings of FAFB neurons were deposited at https://catmaid-fafb.virtualflybrain.org/
 
