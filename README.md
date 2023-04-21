@@ -16,7 +16,7 @@ https://github.com/natverse/fafbseg
 
 https://flywire.ai/
 
-2. hemibrain – [Scheffer et al. (202o)](https://doi.org/10.7554/eLife.57443)
+2. hemibrain – [Scheffer et al. (2020)](https://doi.org/10.7554/eLife.57443)
 The data is publically available at https://neuprint.janelia.org (hemibrain:v1.2.1).
 
 We used the `neuprintr` package to query hemibrain data.
