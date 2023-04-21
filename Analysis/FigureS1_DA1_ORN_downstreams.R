@@ -6,14 +6,6 @@
 # ----------------------------------------------------------------------------------------------
 library(natverse)
 library(ggplot2)
-
-
-
-
-library(ggforce)
-library(natspec)
-library(ComplexHeatmap)
-library(RColorBrewer)
 library(dplyr)
 
 # set working directory to repository
@@ -76,17 +68,21 @@ ORN_NOside_us_PN = ORN_NOside_us[(!grepl("LN", ORN_NOside_us$type)) & (!grepl("O
 # initially, anything that doesn't have LN (local neuron) in its hemibrain cell type
 # will be referred to as PN (projection neuron)
 
-# take DA1 ORN downstream PN cell types that get more than 10 synapses from all DA1 ORNs
+
+# we want to identify every non-local neuron type (PN) that gets DA1 ORN ( = cVA) input
+# we remove any cell type with very low number of absolute inputs (10 or fewer synapses from the 142 DA1 ORNs overall)
 ORN_ds_PN = ORN_ds[(!grepl("LN", ORN_ds$type)) & (!grepl("ORN", ORN_ds$type)) & ORN_ds$weight > 10,]
+
+# we then calculate the proportion of DA1 ORN inputs for each of these cell types to see how selective they are to cVA
 
 # find the inputs of these PN cell types
 DA1_PN_conn_l = lapply(as.list(ORN_ds_PN$type), neuprint_connection_table, prepost = "PRE")
-# calculate the proportion of DA1 ORN inputs for each of these cell types
+# make empty data frame
 DA1_input_ratio = as.data.frame(matrix(NA, nrow = length(DA1_PN_conn_l), ncol =7))
 colnames(DA1_input_ratio) = c("PN_type", "ORN_weight", "DA1_ORN_ratio", "other_ORN_w", "DA1_PN_ratio", "other_PN_w", "nonORN_inputs")
 DA1_input_ratio[, 1] = ORN_ds_PN$type
 DA1_input_ratio[, 2] = ORN_ds_PN$weight
-
+# fill data frame with values
 for (i in 1:length(DA1_PN_conn_l)) {
   x = DA1_PN_conn_l[[i]]
   x$type = neuprint_get_neuron_names(x$partner)
@@ -109,9 +105,19 @@ for (i in 1:length(DA1_PN_conn_l)) {
 
 
 
-
-
+# in columns "DA1_ORN_ratio" we calculated the proportion of DA1 ORN input from all ORN input (rather than all input, including LNs and other PNs)
+# let's find PNs that have at least 5% of their ORN inputs from DA1 ORNs
 DA1_input_ratio_thr = DA1_input_ratio[DA1_input_ratio$DA1_ORN_ratio > 0.05, ]
+
+
+# we found all the cell types that get at least 5% of their ORn input from DA1 ORNs (and this 5% is more than 10 synapses)
+# we will plot the absolute and relative input connectivity of these 13 cell types, and their morphology
+DA1_input_ratio_thr$PN_type
+
+# ----------------------------------------------------------------------------------------------
+# tidy data frame for plotting
+
+# calculate input synapse numbers / neuron for cell types
 DA1_input_ratio_to_plot = as.data.frame(cbind(c(DA1_input_ratio_thr$PN_type, DA1_input_ratio_thr$PN_type, DA1_input_ratio_thr$PN_type),
                                               c(DA1_input_ratio_thr$ORN_weight, DA1_input_ratio_thr$other_ORN_w, DA1_input_ratio_thr$nonORN_inputs)))
 
@@ -121,16 +127,16 @@ DA1_input_ratio_to_plot$source = c(rep("Or67d ORNs", nrow(DA1_input_ratio_to_plo
 
 colnames(DA1_input_ratio_to_plot) = c("cell_type", "input", "source")
 DA1_input_ratio_to_plot$input = as.numeric(as.character(DA1_input_ratio_to_plot$input))
+
+
 # count number of cells per cell type and normalise connections by that
 ds_list = as.list(as.character(unique(DA1_input_ratio_to_plot$cell_type)))
-ds_nl = lapply(ds_list, neuprint_read_neurons, conn = conn)
+ds_nl = lapply(ds_list, neuprint_read_neurons) # loading all PN morphologies might take some time
 n_cells = unlist(lapply(ds_nl[1:13], length))
-n_cells = c(7, 2, 1, 3, 1, 1, 2, 2, 1, 1, 1, 2, 1)
+# for cell type OA-VMUa5 there is only one member of the cell type connected, but there are two (bilateral) neurons
+n_cells[6] = 2
 DA1_input_ratio_to_plot$input_perneuron = DA1_input_ratio_to_plot$input / rep(n_cells, 3)
 DA1_input_ratio_to_plot$cell_type = factor(DA1_input_ratio_to_plot$cell_type, levels = as.character(unique(DA1_input_ratio_to_plot$cell_type)))
-# DA1_input_ratio_to_plot$cell_type = factor(DA1_input_ratio_to_plot$cell_type, levels = c("DA1_lPN", "DA1_vPN", "AL-AST1", "OA-VUMa5", "M_lvPNm45", "M_vPNml55", 
-#                                                                                          "M_lv2PN9t49", "M_lvPNm42", "M_lvPNm31", "M_vPNml82", 
-#                                                                                         "M_lvPNm44", "M_l2PNm16", "M_lvPNm43"))
 DA1_input_ratio_to_plot$source = factor(DA1_input_ratio_to_plot$source, levels = c("non ORN input", "other ORNs", "Or67d ORNs"))
 
 all_input = DA1_input_ratio_to_plot %>%
@@ -140,27 +146,16 @@ all_input = DA1_input_ratio_to_plot %>%
 DA1_input_ratio_to_plot$rel_input =  DA1_input_ratio_to_plot$input / rep(all_input$`sum(input)`, 3)
 
 
-
-barwidth = 0.8
-
-
-# collect bodyids of every cell in these cell types for tables 
-bid_l = sapply(DA1_input_ratio_thr$PN_type, neuprint_read_neurons)
-
-
-
-nl = unlist(bid_l, recursive = F)
-bids_named = names(as.neuronlist(nl))
-bids = sapply(strsplit(bids_named,"\\."), `[`, 2)
-bid_types = sapply(strsplit(bids_named,"\\."), `[`, 1)
-# this plot shows all cell types from neuprint that:
-# - have PN in them
+# ----------------------------------------------------------------------------------------------
+# input connectivity plots
+# all cell types from the hemibrain dataset that:
+# - don't contain the term 'LN'
 # - have more than 10 inputs from DA1 ORNs
 # - more than 5% of their ORN inputs is from DA1 ORNs
 
+barwidth = 0.8
 
-
-
+# Figure S1F
 PN_DA1_ratio_abs = ggplot() + 
   geom_bar(data =  DA1_input_ratio_to_plot, 
            mapping = aes(x = cell_type, y = input_perneuron, fill = source), 
@@ -178,12 +173,10 @@ PN_DA1_ratio_abs = ggplot() +
   theme(axis.text = element_text(size = 15)) +
   theme(plot.margin = margin(1, 1, 1, 1, "cm")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) # + facet_zoom(ylim = c(0, 200), show.area = T)
-
 PN_DA1_ratio_abs
 
 
-
-
+# Figure S1H
 PN_DA1_ratio_rel = ggplot() + 
   geom_bar(data =  DA1_input_ratio_to_plot, 
            mapping = aes(x = cell_type, y = rel_input*100, fill = source), 
@@ -201,35 +194,36 @@ PN_DA1_ratio_rel = ggplot() +
   theme(axis.text = element_text(size = 15)) +
   theme(plot.margin = margin(1, 1, 1, 1, "cm")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) # + facet_zoom(ylim = c(0, 200), show.area = T)
-
 PN_DA1_ratio_rel
 
 
-pdf("/Users/GitHub/2020cva/analysis/Connectivity_panels/DA1_PNs_rel_Or67d_input_ABS_abs10_rel005.pdf", height = 6, width = 6)
+pdf("Figure_panels/Figure S1F.pdf", height = 6, width = 6)
 print(PN_DA1_ratio_abs)
 dev.off()
-pdf("/Users/GitHub/2020cva/analysis/Connectivity_panels/DA1_PNs_rel_Or67d_input_REL_abs10_rel005.pdf", height = 6, width = 6)
+pdf("Figure_panels/Figure S1H.pdf", height = 6, width = 6)
 print(PN_DA1_ratio_rel)
 dev.off()
 
-# "M_lvPNm29" and "M_lvPNm31" = biglomerular lvPN3 (Type 3 mPN); bids = c(1672293837,1943811511)
-# T3_bi = c(1672293837,1943811511)
-# annotated as "Type 3 IT oligo" in CATMAID if plotting needed
 
 
 
+# ----------------------------------------------------------------------------------------------
+# morphology 3D plots
+
+# omit DA1 lPN and DA1 lvPN as they were shown in Figure 1B, C and Figure S1A, B
 ds_list = as.list(as.character(unique(DA1_input_ratio_to_plot$cell_type)))
-ds_list_sub = as.character(ds_list)[c(2, 3, 5, 6, 7, 8 ,9, 10, 11, 12, 13)]
+ds_list_sub = as.character(ds_list)[c(-1, -4)]
 # ds_nl = lapply(ds_list, neuprint_read_neurons)
-ds_nl_plot = ds_nl[c(2, 3, 5, 6, 7, 8 ,9, 10, 11, 12, 13)]
+ds_nl_plot = ds_nl[c(-1, -4)]
 
+# set plot orientation of the hemibrain volume
 zoom.hb<-0.6446092
 userMatrix.hb<-structure(c(0.998458445072174, -0.0149619737640023, 0.0534479767084122, 
                            0, -0.0538569055497646, -0.02841392531991, 0.998144328594208, 
                            0, -0.0134155601263046, -0.999484062194824, -0.0291759837418795, 
                            0, 0, 0, 0, 1), .Dim = c(4L, 4L))
 windowRect.hb<-c(116L, 1125L, 1121L, 2131L)
-file_out = "/Users/GitHub/2020cva/analysis/EM_skeleton_plots/Figure_S1/"
+file_out = "Figure_panels/Figure S1I/"
 
 
 # cols = brewer.pal(length(ds_nl_plot), "Spectral")
@@ -242,8 +236,8 @@ plot_order = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
 for (i in 1:length(ds_nl_plot)) {
   nopen3d(zoom = zoom.hb, userMatrix = userMatrix.hb, windowRect=windowRect.hb)
   plot3d(hemibrainr::hemibrain.surf, alpha = .05)
-  plot3d(ds_nl_plot[[plot_order[i]]], col = cols[i], lwd = linewidth)
-  snapshot3d(paste(file_out, ds_list_sub[plot_order[i]], ".png", sep = ""))
+  plot3d(ds_nl_plot[[i]], col = cols[i], lwd = linewidth)
+  snapshot3d(paste(file_out, ds_list_sub[i], ".png", sep = ""))
 }
-
+# close all rgl windows
 while (rgl.cur() > 0) { rgl.close() }
