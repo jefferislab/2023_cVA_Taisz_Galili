@@ -10,7 +10,7 @@ Manual tracings of FAFB neurons were deposited at https://catmaid-fafb.virtualfl
 
 We used the `rcatmaid` package to query data from CATMAID, and the `fafbseg` package to query data from FlyWire.
 
-https://github.com/natverse/rcatmaid
+https://natverse.org/rcatmaid/
 
 https://github.com/natverse/fafbseg
 
